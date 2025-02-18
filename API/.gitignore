@@ -1,0 +1,7 @@
+# App settings dosyalarını yok say
+appsettings.json
+appsettings.*.json
+
+# Log ve temp dosyalarını yok say
+logs/
+*.log
