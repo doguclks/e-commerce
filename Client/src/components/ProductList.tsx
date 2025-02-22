@@ -1,15 +1,20 @@
+import { Grid2 } from "@mui/material";
 import { IProduct } from "../models/IProduct";
 import Product from "./Product";
 
-export default function ProductsList(props : any){
+interface Props {
+  products: IProduct[];
+}
+export default function ProductsList({products} : Props){ 
     return (
       <>
-      <h2>ProductList</h2>
-      {props.products.map((product : IProduct) => (
-        <Product key={product.id} products={product}/>
+      <Grid2 container spacing={2}>
+      {products.map((product: IProduct) => (
+        <Grid2 size={{xs: 12, md: 4, lg: 3}}>
+        <Product key = {product.id} product={product}/>  
+      </Grid2>
       ))}
-      <button onClick={props.addProductClick}>Product Add</button>
-      
+      </Grid2>
       </>
     )
-  }
+  }             
