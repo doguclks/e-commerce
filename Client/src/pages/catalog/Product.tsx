@@ -3,6 +3,10 @@ import { IProduct } from "../../models/IProduct"
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import requests from "../../api/request";
+import { LoadingButton } from "@mui/lab";
+import { useCartContext } from "../../context/CartContext";
 
 
 interface Props {
@@ -10,6 +14,17 @@ interface Props {
 }
 export default function Product({product} : Props){
   
+  const [loading, setLoading] = useState(false);
+  const {setCart} = useCartContext();
+
+  function handleAddItem(productId : number)
+  {
+    setLoading(true);
+    requests.Cart.addItem(productId)
+    .then(cart => setCart(cart))
+    .catch(error => console.log(error))
+    .finally(() => setLoading(false));
+  }
     return (
       <>
       <Card> 
@@ -19,7 +34,15 @@ export default function Product({product} : Props){
           <Typography variant="body2" color ="secondary" component="p">{(product.price / 100).toFixed(2)} $</Typography>
         </CardContent>
         <CardActions>
-          <Button variant = "outlined" size="small" color="primary" startIcon = {<AddShoppingCartIcon/>} >Add to Cart</Button> 
+          <LoadingButton 
+            loading = {loading}
+            onClick={() => handleAddItem(product.id)}
+            loadingPosition="start"
+            startIcon={<AddShoppingCartIcon/>}
+            variant="outlined"
+            size = "small"
+          >Add to Cart
+          </LoadingButton>
           <Button component = {Link} to={`/catalog/${product.id}`} variant = "outlined" size="small" color="secondary" startIcon = {<SearchIcon/>} >View</Button>
         </CardActions>
       </Card>
