@@ -9,9 +9,12 @@ import { AddShoppingCart } from '@mui/icons-material';
 import { useCartContext } from '../../context/CartContext';
 import { toast } from 'react-toastify';
 import { currencyTRY } from '../../utils/formatCurrencty';
+import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
+import { setCart } from '../cart/cartSlice';
 function ProductDetailsPage() {
 
-  const {cart, setCart} = useCartContext();
+  const {cart} = useAppSelector(state => state.cart);
+  const dispatch = useAppDispatch();
   const {id} = useParams<{ id: string }>();
   const [product, setProduct] = useState<IProduct | null>();
   const [loading, setLoading] = useState(true);
@@ -32,7 +35,7 @@ function ProductDetailsPage() {
     setIsAdded(true);
     requests.Cart.addItem(productId)
     .then(cart => {
-      setCart(cart);
+      dispatch(setCart(cart));
       toast.success("Item added to cart");
     })
     .catch(error => console.log(error))

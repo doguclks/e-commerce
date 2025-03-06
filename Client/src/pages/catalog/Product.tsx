@@ -8,6 +8,8 @@ import requests from "../../api/request";
 import { LoadingButton } from "@mui/lab";
 import { useCartContext } from "../../context/CartContext";
 import { currencyTRY } from "../../utils/formatCurrencty";
+import { useAppDispatch } from "../../hooks/hooks";
+import { setCart } from "../cart/cartSlice";
 
 
 interface Props {
@@ -16,13 +18,12 @@ interface Props {
 export default function Product({product} : Props){
   
   const [loading, setLoading] = useState(false);
-  const {setCart} = useCartContext();
-
+  const dispatch = useAppDispatch();
   function handleAddItem(productId : number)
   {
     setLoading(true);
     requests.Cart.addItem(productId)
-    .then(cart => setCart(cart))
+    .then(cart => dispatch(setCart(cart)))
     .catch(error => console.log(error))
     .finally(() => setLoading(false));
   }

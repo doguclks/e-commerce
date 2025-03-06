@@ -1,8 +1,10 @@
 
 import { ShoppingCart } from "@mui/icons-material";
-import { AppBar, Badge, Box, Button, IconButton, List, ListItem, ListItemText, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Badge, Box, Button, IconButton, Stack, Toolbar, Typography } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
 import { useCartContext } from "../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 
 const links = [
   { title: "Home", path: "/" },
@@ -23,8 +25,8 @@ const navStyles = {
 }
 export default function Header(){
 
-  const {cart} = useCartContext();
-  const itemCount = cart?.cartItems.reduce((total,item) => total + item.quantity, 0);
+  const {cart} = useAppSelector(state => state.cart);  
+  const itemCount = cart?.cartItems.reduce((total, item) => total + item.quantity, 0);
     return (
       <AppBar position="static" sx={{mb : 4}}>
         <Toolbar sx={{display: "flex", justifyContent: "space-between"}}>
