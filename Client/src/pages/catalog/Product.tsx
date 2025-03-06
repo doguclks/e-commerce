@@ -7,6 +7,7 @@ import { useState } from "react";
 import requests from "../../api/request";
 import { LoadingButton } from "@mui/lab";
 import { useCartContext } from "../../context/CartContext";
+import { currencyTRY } from "../../utils/formatCurrencty";
 
 
 interface Props {
@@ -31,7 +32,7 @@ export default function Product({product} : Props){
         <CardMedia sx ={{height: 300 , backgroundSize: "contain"}} image = {`http://localhost:5045/images/${product.imageUrl}`}/>
         <CardContent>
           <Typography gutterBottom variant="h6" color ="text.secondary" component="h2">{product.name}</Typography>
-          <Typography variant="body2" color ="secondary" component="p">{(product.price / 100).toFixed(2)} $</Typography>
+          <Typography variant="body2" color ="secondary" component="p">{currencyTRY.format(product.price)}</Typography>
         </CardContent>
         <CardActions>
           <LoadingButton 

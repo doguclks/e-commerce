@@ -4,27 +4,33 @@ import { useCartContext } from '../../context/CartContext';
 import { LoadingButton } from '@mui/lab';
 import { useState } from 'react';
 import requests from '../../api/request';
+import CartSummary from './CartSummary';
+import { currencyTRY } from '../../utils/formatCurrencty';
 
 function ShoppingCartPage() {
   
     const { cart,setCart} = useCartContext();
-    const [loading, setLoading]  = useState(false);
+    const [status, setStatus]  = useState({loading : false, id : ""});
 
-    function handleAddItem(productId : number) 
+    function handleAddItem(productId : number , id : string) 
     {
-      setLoading(true);
+      setStatus({loading : true, id : id });
       requests.Cart.addItem(productId)
         .then(cart => setCart(cart))
         .catch(error => console.log(error))
-        .finally(() => setLoading(false));
+        .finally(() => setStatus({loading : false, id : ""}));
     }   
-    function handleDeleteItem(productId: number, quantity = 1)
+    function handleGoToProductDetails(productId : number)
     {
-      setLoading(true);
+      window.location.href = `/catalog/${productId}`
+    }
+    function handleDeleteItem(productId: number,id : string,  quantity = 1)
+    {
+      setStatus({loading : true, id : id });
       requests.Cart.deleteItem(productId, quantity)
         .then(cart => setCart(cart))
         .catch(error => console.log(error))
-        .finally(() => setLoading(false)); 
+        .finally(() => setStatus({loading : false, id : ""})); 
     }
     if (cart?.cartItems.length === 0) return <Alert severity = "warning">There is no item in the cart</Alert>
   return (
@@ -47,33 +53,35 @@ function ShoppingCartPage() {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                <img src={`http://localhost:5045/images/${item.imageUrl}`} style={{height: 60}} />
+                <img src={`http://localhost:5045/images/${item.imageUrl}`} style={{height: 60, cursor: "pointer"}} onClick={() => handleGoToProductDetails(item.productId)}/>
               </TableCell>
               <TableCell component="th" scope="row">
                 {item.name}
               </TableCell>
-              <TableCell align="right">{item.price} $</TableCell>
+              <TableCell align="right">{currencyTRY.format(item.price)}</TableCell>
               <TableCell align="right">
-                <LoadingButton loading={loading} onClick={() => handleAddItem(item.productId)}>
+                <LoadingButton loading={status.loading && status.id === "add" + item.productId} 
+                onClick={() => handleAddItem(item.productId, "add" + item.productId)}>
                 <AddCircleOutline/>
                 </LoadingButton>
                 {item.quantity}
-                <LoadingButton loading={loading} onClick={() => handleDeleteItem(item.productId)}>
+                <LoadingButton loading={status.loading && status.id === "del" + item.productId} onClick={() => handleDeleteItem(item.productId, "del" + item.productId)}>
                 <RemoveCircleOutline/>
                 </LoadingButton>
-                
                 </TableCell>
-              <TableCell align="right">{item.price * item.quantity} $</TableCell>
+              <TableCell align="right">{currencyTRY.format( item.price * item.quantity)}</TableCell>
               <TableCell align="right">
-                <LoadingButton color='error' loading={loading} onClick={() => handleDeleteItem(item.productId,item.quantity)}>
+                <LoadingButton color='error' loading={status.loading && status.id === "delAll" + item.productId} onClick={() => handleDeleteItem(item.productId,"delAll" + item.productId,item.quantity)}>
                   <Delete/>
                 </LoadingButton>
-              </TableCell>
+              </TableCell> 
             </TableRow>
           ))}
+        <CartSummary/>
         </TableBody>
       </Table>
     </TableContainer>
+
   )
 }
 

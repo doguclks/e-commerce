@@ -37,6 +37,7 @@ public class CartController : ControllerBase
         return BadRequest("Failed to add the product to the cart");
     }
     [HttpDelete]
+
     public async Task<ActionResult> DeleteItemFromCart(int productId, int quantity)
     {
         var cart = await GetOrCreate();
@@ -44,7 +45,9 @@ public class CartController : ControllerBase
         cart.DeleteItem(productId, quantity);
 
         var result = await _context.SaveChangesAsync() > 0;
-        if (result) return Ok();
+
+        if (result) return CreatedAtAction(nameof(GetCart), CartToDTO(cart));
+
 
         return BadRequest("Failed to delete the product from the cart");
     }
