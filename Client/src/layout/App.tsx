@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import requests from "../api/request";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { setCart } from "../pages/cart/cartSlice";
+import { setCart } from "../features/cart/cartSlice";
 function App() {
 
   const dispatch = useAppDispatch();

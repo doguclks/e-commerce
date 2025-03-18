@@ -6,42 +6,32 @@ import requests from '../../api/request';
 import NotFound from '../../errors/NotFound';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { AddShoppingCart } from '@mui/icons-material';
-import { useCartContext } from '../../context/CartContext';
-import { toast } from 'react-toastify';
 import { currencyTRY } from '../../utils/formatCurrencty';
 import { useAppDispatch, useAppSelector } from '../../hooks/hooks';
-import { setCart } from '../cart/cartSlice';
+import { addItemToCart } from '../cart/cartSlice';
+import { toast } from 'react-toastify';
+import { fetchProductById, selectProductById } from './catalogSlice';
 function ProductDetailsPage() {
 
-  const {cart} = useAppSelector(state => state.cart);
+  const {cart, status} = useAppSelector(state => state.cart);
   const dispatch = useAppDispatch();
   const {id} = useParams<{ id: string }>();
-  const [product, setProduct] = useState<IProduct | null>();
-  const [loading, setLoading] = useState(true);
-  const [isAdded, setIsAdded] = useState(false);
+  const product = useAppSelector(state => selectProductById(state, Number(id)));
+  const {status : loading} = useAppSelector(state => state.catalog);
   const item = cart?.cartItems.find(item => item.productId === product?.id);
-  const getProductById = async () => {
-    id && requests.Catalog.details(parseInt(id))
-    .then(data => setProduct(data))
-    .catch(error => console.log(error))
-    .finally(() => setLoading(false));
-  }
+  
+  
   useEffect(() => {
-    getProductById();
+    if (!product &&id)
+    dispatch(fetchProductById(parseInt(id)))
   }, [id])
 
-  function handleAddItem(productId : number)
+  const handleAddItem = (productId : number) =>
   {
-    setIsAdded(true);
-    requests.Cart.addItem(productId)
-    .then(cart => {
-      dispatch(setCart(cart));
-      toast.success("Item added to cart");
-    })
-    .catch(error => console.log(error))
-    .finally(() => setIsAdded(false));
+    dispatch(addItemToCart({productId}))
+    toast.success("Item added to cart");
   }
-  if (loading) return <CircularProgress/>
+  if (loading === "loading") return <CircularProgress/>
   if (!product) return <NotFound/>
 
   return (
@@ -77,8 +67,8 @@ function ProductDetailsPage() {
           variant = "outlined"
            loadingPosition = "start"
            startIcon={<AddShoppingCart/>}
-           loading = {isAdded}
-           onClick={() => handleAddItem(product.id)}
+           loading = {status === "loadingAddItem" + product.id}
+           onClick={() => {handleAddItem(product.id)}}
            >Add to Cart</LoadingButton>
            {
             item?.quantity! > 0 && (

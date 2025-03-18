@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using API.Entity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 namespace API.Data;
-public class DataContext : DbContext
+public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser>(options)
 {
-    public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Cart> Carts => Set<Cart>();
 
