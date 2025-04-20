@@ -157,3 +157,4 @@ C:\Users\dcalk\OneDrive\Desktop\development\e-commerce\API\bin\Debug\net9.0\Swas
 C:\Users\dcalk\OneDrive\Desktop\development\e-commerce\API\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\dcalk\OneDrive\Desktop\development\e-commerce\API\obj\Debug\net9.0\API.sourcelink.json
 C:\Users\dcalk\OneDrive\Desktop\development\e-commerce\API\bin\Debug\net9.0\API.staticwebassets.runtime.json
+C:\Users\dcalk\OneDrive\Desktop\development\e-commerce\API\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

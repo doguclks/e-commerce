@@ -1,4 +1,5 @@
 using API.Data;
+using API.Entity;
 using API.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 builder.Services.AddControllers();
 builder.Services.AddCors();
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<DataContext>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 var app = builder.Build();
@@ -40,5 +42,7 @@ app.UseCors(opt =>
 app.UseAuthorization();
 
 app.MapControllers();
+
+SeedDatabase.Initialize(app);
 
 app.Run();
