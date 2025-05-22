@@ -1,5 +1,6 @@
 using API.DTO;
 using API.Entity;
+using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;
+    private readonly TokenService _tokenService;
 
-    public AccountController(UserManager<AppUser> userManager)
+    public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
     {
         _userManager = userManager;
+        _tokenService = tokenService;
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDTO model)
@@ -24,7 +27,7 @@ public class AccountController : ControllerBase
 
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
 
-        if (result) return Ok(new { token = "token" });
+        if (result) return Ok(new { token = await _tokenService.GenerateToken(user) });
         return Unauthorized();
     }
     [HttpPost("register")]

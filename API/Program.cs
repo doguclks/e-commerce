@@ -1,6 +1,7 @@
 using API.Data;
 using API.Entity;
 using API.Middlewares;
+using API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+// Add JWT Authentication
+builder.Services.AddScoped<TokenService>();
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandling>();
